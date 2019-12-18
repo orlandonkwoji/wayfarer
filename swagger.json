@@ -1,0 +1,1690 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Wayfarer",
+    "description": "An  online booking platform that provides transportation to individuals. This helps solve problems of quick transportation.",
+    "version": "1.0.0",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "orlandonkwoji@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3700/api/v1",
+      "description": "Development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication"
+    },
+    {
+      "name": "Bus",
+      "description": "The `bus` that will be used to transport the clients"
+    },
+    {
+      "name": "Trip",
+      "description": "The `trip` from an `origin` to a `destination`"
+    },
+    {
+      "name": "Booking",
+      "description": "A `booking` by a client for a trip"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Creates a new user.",
+        "description": "A **user** is added to the users table of the wayfarer database The default value of the `is_admin` property of the created user is *false*\n",
+        "operationId": "createUser",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/signupBody"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/successUserResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "first_name: is a required field"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "enum": [
+                            "A user with this email already exists"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logs in a user to get a JWT token.",
+        "description": "A **user** logs in and is provided with a *JSON Web Token* to access secured endpoints of the API\n",
+        "operationId": "signIn",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/LoginBody"
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/successUserResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid Credentials"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/buses": {
+      "post": {
+        "tags": [
+          "Bus"
+        ],
+        "summary": "Adds a bus to the database.",
+        "description": "A **bus** added to the database for creating trips\n",
+        "operationId": "addBus",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/AddBusBody"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/SuccessAddBusResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid Credentials"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "A bus with this plate number already exists"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/trips": {
+      "post": {
+        "tags": [
+          "Trip"
+        ],
+        "summary": "Create a trip.",
+        "description": "A `trip` created for clients booked for a journey from `origin` to `destination`\n",
+        "operationId": "createTrip",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/createTripBody"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/createTripResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "destination: is a required field"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "This bus is unavailable"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "An active trip with this bus exists"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Trip"
+        ],
+        "summary": "Get trips.",
+        "description": "An array of all `trips` is returned to the client\n",
+        "operationId": "getTrips",
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Specifies the starting location of a `trip`. This parameter is incompatible with `destination`.\n"
+          },
+          {
+            "name": "destination",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Specifies the end location of a `trip`. This parameter is incompatible with `origin`.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/getTripsResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "\"origin\" is incompatible with \"destination\""
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/trips/{trip_id}": {
+      "patch": {
+        "tags": [
+          "Trip"
+        ],
+        "summary": "Cancel a trip.",
+        "description": "A `trip` created for clients booked for a journey from `origin` to `destination`\n",
+        "operationId": "patchTrip",
+        "parameters": [
+          {
+            "name": "trip_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "exclusiveMinimum": false
+            },
+            "description": "The trip ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PatchTripResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "trip_id: is a required field"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "This trip does not exist"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "This trip is already cancelled"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "post": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Creates a booking.",
+        "description": "A booking for a `trip` is created\n",
+        "operationId": "createBooking",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateBookingBody"
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/SuccessCreateBookingResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "trip_id: is a required field"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "This trip is unavailable"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "You are already booked on this trip"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Get bookings.",
+        "description": "An array of all `bookings` is returned\n",
+        "operationId": "getBookings",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/GetBookingsResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    },
+    "/bookings/{booking_id}": {
+      "delete": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Delete a booking.",
+        "description": "A `booking` is deleted by the client\n",
+        "operationId": "deleteBooking",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "exclusiveMinimum": false
+            },
+            "description": "The booking ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DeleteBookingResponse"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "booking_id: is a required field"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Booking not found"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Unexpected"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "successUserResponse": {
+        "description": "A JSON response that contains the user object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessObject"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "links": {
+          "TokenLinkCreateTrip": {
+            "$ref": "#/components/links/TokenLinkCreateTrip"
+          },
+          "TokenLinkPatchTrip": {
+            "$ref": "#/components/links/TokenLinkPatchTrip"
+          },
+          "TokenLinkGetTrips": {
+            "$ref": "#/components/links/TokenLinkGetTrips"
+          },
+          "TokenLinkCreateBooking": {
+            "$ref": "#/components/links/TokenLinkCreateBooking"
+          },
+          "TokenLinkGetBookings": {
+            "$ref": "#/components/links/TokenLinkGetBookings"
+          },
+          "TokenLinkAddBus": {
+            "$ref": "#/components/links/TokenLinkAddBus"
+          }
+        }
+      },
+      "SuccessAddBusResponse": {
+        "description": "A JSON response that contains the bus object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessObject"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Bus"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "links": {
+          "TakeBusIdToCreateTrip": {
+            "$ref": "#/components/links/TakeBusIdToCreateTrip"
+          }
+        }
+      },
+      "SuccessCreateBookingResponse": {
+        "description": "A JSON response that contains the booking object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessObject"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Booking"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "links": {
+          "TakeBusIdToCreateTrip": {
+            "$ref": "#/components/links/TakeBusIdToCreateTrip"
+          }
+        }
+      },
+      "createTripResponse": {
+        "description": "A JSON response that contains the trip object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessObject"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Trip"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "PatchTripResponse": {
+        "description": "A JSON response that contains the trip object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessObject"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PatchTrip"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "DeleteBookingResponse": {
+        "description": "A JSON response that contains the booking object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessObject"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/DeleteBooking"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "getTripsResponse": {
+        "description": "A JSON response that contains an array of trips object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessArray"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TripsArray"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "GetBookingsResponse": {
+        "description": "A JSON response that contains an array of bookings object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/SuccessArray"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BookingsArray"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Invalid token or none provided"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "enum": [
+                        "Access Denied"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Unexpected": {
+        "description": "Unexpected",
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Error"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "LoginBody": {
+        "description": "A JSON object containing user login credentials",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "orlando@wayfarer.com"
+                },
+                "password": {
+                  "type": "string",
+                  "format": "password",
+                  "example": "Wayfarer10"
+                }
+              }
+            }
+          }
+        }
+      },
+      "signupBody": {
+        "description": "A JSON object containing user signup credentials",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "AddBusBody": {
+        "description": "A JSON object containing the bus credentials",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Bus"
+            }
+          }
+        }
+      },
+      "CreateBookingBody": {
+        "description": "A JSON object containing the booking credentials",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "trip_id"
+              ],
+              "properties": {
+                "trip_id": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/IdInt"
+                    },
+                    {
+                      "type": "integer",
+                      "example": 1
+                    }
+                  ]
+                },
+                "seat_number": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/IdInt"
+                    },
+                    {
+                      "type": "integer",
+                      "example": 2
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "createTripBody": {
+        "description": "A JSON object containing the trip credentials",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Trip"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "error"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "SuccessObject": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "status",
+          "data"
+        ]
+      },
+      "SuccessArray": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "status",
+          "data"
+        ]
+      },
+      "User": {
+        "title": "User",
+        "type": "object",
+        "required": [
+          "first_name",
+          "last_name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "user_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 4
+              }
+            ]
+          },
+          "is_admin": {
+            "type": "boolean",
+            "readOnly": true,
+            "example": false
+          },
+          "token": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JwtToken"
+              },
+              {
+                "type": "string",
+                "readOnly": true
+              }
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "orlando@wayfarer.com"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "ORLANDO"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "NKWOJI"
+          },
+          "password": {
+            "type": "string",
+            "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\\d]{8,20}$",
+            "minLength": 8,
+            "maxLength": 20,
+            "format": "password",
+            "example": "wayFarer10",
+            "writeOnly": true
+          }
+        }
+      },
+      "Bus": {
+        "title": "Bus",
+        "type": "object",
+        "required": [
+          "bus_id",
+          "number_plate",
+          "manufacturer",
+          "model",
+          "year",
+          "capacity"
+        ],
+        "properties": {
+          "bus_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 2
+              }
+            ]
+          },
+          "number_plate": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}-[0-9]{3}[A-Z]{2}$",
+            "example": "DAM-458YU"
+          },
+          "manufacturer": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Alphanumeric"
+              },
+              {
+                "type": "string",
+                "example": "TOYOTA"
+              }
+            ]
+          },
+          "model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Alphanumeric"
+              },
+              {
+                "type": "string",
+                "example": "CAMRY"
+              }
+            ]
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 2011,
+            "exclusiveMinimum": false,
+            "example": 2018
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 200,
+            "exclusiveMinimum": false,
+            "exclusiveMaximum": false,
+            "example": 50
+          }
+        }
+      },
+      "Booking": {
+        "title": "Booking",
+        "type": "object",
+        "required": [
+          "booking_id",
+          "user_id",
+          "trip_id",
+          "bus_id",
+          "trip_date",
+          "seat_number",
+          "first_name",
+          "last_name",
+          "email"
+        ],
+        "properties": {
+          "booking_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 1
+              }
+            ]
+          },
+          "user_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 2
+              }
+            ]
+          },
+          "trip_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 1
+              }
+            ]
+          },
+          "bus_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 1
+              }
+            ]
+          },
+          "trip_date": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "example": "2020-05-12"
+              },
+              {
+                "type": "string",
+                "pattern": "YYYY/MM/DD"
+              }
+            ]
+          },
+          "seat_number": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "example": 2
+              }
+            ]
+          },
+          "first_name": {
+            "type": "string",
+            "example": "ORLANDO"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "NKWOJI"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "orlando@wayfarer.com"
+          }
+        }
+      },
+      "Trip": {
+        "title": "Trip",
+        "type": "object",
+        "required": [
+          "trip_id",
+          "bus_id",
+          "origin",
+          "destination",
+          "trip_date",
+          "fare",
+          "status"
+        ],
+        "properties": {
+          "trip_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "readOnly": true,
+                "example": 2
+              }
+            ]
+          },
+          "bus_id": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IdInt"
+              },
+              {
+                "type": "integer",
+                "example": 1
+              }
+            ]
+          },
+          "origin": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Alphanumeric"
+              },
+              {
+                "type": "string",
+                "example": "LAGOS"
+              }
+            ]
+          },
+          "destination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Alphanumeric"
+              },
+              {
+                "type": "string",
+                "example": "ABUJA"
+              }
+            ]
+          },
+          "trip_date": {
+            "allOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "example": "2020-05-12"
+              },
+              {
+                "type": "string",
+                "pattern": "YYYY/MM/DD"
+              }
+            ]
+          },
+          "fare": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "example": 500
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "cancelled"
+            ],
+            "default": "active"
+          }
+        }
+      },
+      "PatchTrip": {
+        "allOf": [
+          {
+            "type": "object",
+            "title": "PatchTrip",
+            "required": [
+              "message"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "enum": [
+                  "Trip cancelled successfully"
+                ]
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Trip"
+          }
+        ]
+      },
+      "DeleteBooking": {
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "message"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "enum": [
+                  "Booking deleted successfully"
+                ]
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Booking"
+          }
+        ]
+      },
+      "TripsArray": {
+        "title": "TripsArray",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Trip"
+        },
+        "minItems": 0,
+        "uniqueItems": true
+      },
+      "BookingsArray": {
+        "title": "BookingsArray",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Booking"
+        },
+        "minItems": 0,
+        "uniqueItems": true
+      },
+      "IdInt": {
+        "title": "ID",
+        "type": "integer",
+        "format": "int32",
+        "minimum": 1,
+        "exclusiveMinimum": false
+      },
+      "Alphanumeric": {
+        "title": "Alphanumeric",
+        "type": "string",
+        "pattern": "^[A-Z0-9]{3,16}$"
+      },
+      "JwtToken": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$",
+        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJtYWNrMTBAYnVsbGV0cy5jb20iLCJpc19hZG1pbiI6ZmFsc2UsImZpcnN0X25hbWUiOiJNQUNLIiwibGFzdF9uYW1lIjoiVEVOIiwiaWF0IjoxNTc1MjAxNTQ3LCJleHAiOjE1NzU4MDYzNDd9.wzDAMKmxx50Dr4xi1lZm8EVYeB4qKjxap0WFpmp3u4I"
+      }
+    },
+    "links": {
+      "TakeBusIdToCreateTrip": {
+        "description": "The `bus_id` value returned in the response can be used as the `bus_id` in the `requestBody` of `POST /trips`.\n",
+        "operationId": "createTrip",
+        "requestBody": {
+          "bus_id": "$response.body#/data/bus_id"
+        }
+      },
+      "TokenLinkCreateTrip": {
+        "description": "The `token` value returned in the response can be used as the `token` in the `requestBody` of `POST /trips`.\n",
+        "operationId": "createTrip",
+        "requestBody": {
+          "token": "$response.body#/data/token"
+        }
+      },
+      "TokenLinkPatchTrip": {
+        "description": "The `token` value returned in the response can be used as the `token` in the `requestBody` of `PATCH /trips`.\n",
+        "operationId": "patchTrip",
+        "requestBody": {
+          "token": "$response.body#/data/token"
+        }
+      },
+      "TokenLinkGetTrips": {
+        "description": "The `token` value returned in the response can be used as the `token` in the `requestBody` of `GET /trips`.\n",
+        "operationId": "getTrips",
+        "requestBody": {
+          "token": "$response.body#/data/token"
+        }
+      },
+      "TokenLinkCreateBooking": {
+        "description": "The `token` value returned in the response can be used as the `token` in the `requestBody` of `POST /bookings`.\n",
+        "operationId": "createBooking",
+        "requestBody": {
+          "token": "$response.body#/data/token"
+        }
+      },
+      "TokenLinkGetBookings": {
+        "description": "The `token` value returned in the response can be used as the `token` in the `requestBody` of `GET /bookings`.\n",
+        "operationId": "getBookings",
+        "requestBody": {
+          "token": "$response.body#/data/token"
+        }
+      },
+      "TokenLinkAddBus": {
+        "description": "The `token` value returned in the response can be used as the `token` in the `requestBody` of `POST /buses`.\n",
+        "operationId": "addBus",
+        "requestBody": {
+          "token": "$response.body#/data/token"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
