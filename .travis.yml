@@ -30,7 +30,7 @@ env:
     - PGPORT=5432
     - PGDATABASE="wayfarer_test_db"
     - PGUSER="orlando"
-    - PGHOST="127.0.0.1"
+    - PGHOST=localhost
     - PGPASSWORD="password"
 before_script:
   - psql --command="CREATE USER ${PGUSER} WITH PASSWORD ${PGPASSWORD};" -U postgres
