@@ -33,7 +33,7 @@ env:
     - PGHOST=localhost
     - PGPASSWORD="password"
 before_script:
-  - sudo lsof -n -u postgres
+  - sudo netstat -ltnp | grep postgres
   - psql --command="CREATE USER ${PGUSER} WITH PASSWORD ${PGPASSWORD};" -U postgres
   - psql --command="CREATE DATABASE ${PGDATABASE} WITH OWNER = ${PGUSER};" -U postgres
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
