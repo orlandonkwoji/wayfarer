@@ -1,5 +1,5 @@
 # Wayfarer
-#### [![Build Status](https://travis-ci.org/orlandonkwoji/wayfarer.svg?branch=develop)](https://travis-ci.org/orlandonkwoji/wayfarer)
+#### [![Build Status](https://travis-ci.org/orlandonkwoji/wayfarer.svg?branch=develop)](https://travis-ci.org/orlandonkwoji/wayfarer) [![Coverage Status](https://coveralls.io/repos/github/orlandonkwoji/wayfarer/badge.svg?branch=develop)](https://coveralls.io/github/orlandonkwoji/wayfarer?branch=develop) [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/test_coverage)](https://codeclimate.com/github/codeclimate/codeclimate/test_coverage)
 
 WayFarer is a public bus transportation booking server. It makes it  unbelievably easy for a user to book a bus trip from the comfort of their homes, school, church, etc.
 
