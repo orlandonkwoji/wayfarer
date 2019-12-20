@@ -2,7 +2,7 @@
   "name": "wayfarer",
   "version": "1.0.0",
   "engines": {
-    "node": ">=8,10.0"
+    "node": "10.15.3"
   },
   "description": "A public bus transport service",
   "main": "app/index.js",
