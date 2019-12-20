@@ -1,5 +1,5 @@
 # Wayfarer
-#### 
+#### [![Build Status](https://travis-ci.org/orlandonkwoji/wayfarer.svg?branch=develop)](https://travis-ci.org/orlandonkwoji/wayfarer)
 
 WayFarer is a public bus transportation booking server. It makes it  unbelievably easy for a user to book a bus trip from the comfort of their homes, school, church, etc.
 
