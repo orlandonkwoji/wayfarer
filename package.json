@@ -8,7 +8,7 @@
   "main": "app/index.js",
   "scripts": {
     "build": "babel app -d build",
-    "start": "set DEBUG=dev && node build/index.js",
+    "start": "set DEBUG=dev && babel-node build/index.js",
     "start:dev": "set DEBUG=dev && cross-env NODE_ENV=dev babel-watch ./app/index.js",
     "test": "cross-env NODE_ENV=test npm run migrate:seed && cross-env NODE_ENV=test nyc --reporter=text mocha --timeout 20000 -c app/test -r @babel/register --exit",
     "nyc": "nyc --reporter=lcov npm test && nyc report --reporter=text-lcov | coveralls",
