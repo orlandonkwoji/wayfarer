@@ -32,10 +32,7 @@ env:
     - PGUSER="cfxoukza"
     - PGHOST="rajje.db.elephantsql.com"
     - PGPASSWORD="4SNz_bXunu-OFVHIJO4qbd8gUMhSFUO8"
-before_script:
-  - sudo netstat -ltnp | grep postgres
-  - psql --command="CREATE USER ${PGUSER} WITH PASSWORD ${PGPASSWORD};" -U postgres
-  - psql --command="CREATE DATABASE ${PGDATABASE} WITH OWNER = ${PGUSER};" -U postgres
+before_script:  
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
