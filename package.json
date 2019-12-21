@@ -31,8 +31,6 @@
   "homepage": "https://github.com/orlandonkwoji/wayfarer#readme",
   "devDependencies": {
     "@babel/node": "^7.7.4",
-    "@babel/plugin-transform-runtime": "^7.7.6",
-    "@babel/preset-env": "^7.7.6",
     "@babel/register": "^7.7.4",
     "ajv": "^6.10.2",
     "babel-watch": "^7.0.0",
@@ -58,6 +56,9 @@
   "dependencies": {
     "@babel/cli": "7.7.7",
     "@babel/core": "7.7.7",
+    "@babel/plugin-proposal-object-rest-spread": "7.7.7",
+    "@babel/plugin-transform-runtime": "7.7.6",
+    "@babel/preset-env": "7.7.7",
     "@babel/runtime-corejs3": "^7.7.6",
     "@hapi/joi": "^16.1.8",
     "@hapi/joi-date": "^2.0.1",
