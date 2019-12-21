@@ -58,6 +58,7 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
+    "@babel/cli": "7.7.7",
     "@babel/runtime-corejs3": "^7.7.6",
     "@hapi/joi": "^16.1.8",
     "@hapi/joi-date": "^2.0.1",
