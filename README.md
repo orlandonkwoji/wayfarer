@@ -60,7 +60,7 @@ https://www.pivotaltracker.com/n/projects/2365211
 }
 ```
 
-API BASE URL http://localhost:3700. It is recommended to attach an `authorization` Header containing the generated `token` from `/api/v1/auth/signin` to access all routes. It should be added as `"Bearer token"`
+API BASE URL https://wayfarer-api-for-orlando.herokuapp.com/. It is recommended to attach an `authorization` Header containing the generated `token` from `/api/v1/auth/signin` to access all routes. It should be added as `"Bearer token"`
 
 ## Authentication endpoints `/api/v1/auth`
 
@@ -110,9 +110,9 @@ API BASE URL http://localhost:3700. It is recommended to attach an `authorizatio
 
 
 # API Docs
-http://localhost:3700/api-docs
+https://wayfarer-api-for-orlando.herokuapp.com/api-docs
 # App URL
-http://localhost:3700/
+https://wayfarer-api-for-orlando.herokuapp.com/
 # Author
 Orlando Nkwoji
 # LICENSE

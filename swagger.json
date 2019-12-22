@@ -10,13 +10,17 @@
     },
     "license": {
       "name": "MIT",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      "url": "https://github.com/orlandonkwoji/wayfarer/blob/develop/LICENSE"
     }
   },
   "servers": [
     {
       "url": "http://localhost:3700/api/v1",
       "description": "Development server"
+    },
+    {
+      "url": "https://wayfarer-api-for-orlando.herokuapp.com/api/v1",
+      "description": "Production server"
     }
   ],
   "tags": [
