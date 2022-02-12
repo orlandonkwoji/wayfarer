@@ -32,7 +32,7 @@
   "devDependencies": {
     "@babel/node": "^7.7.4",
     "@babel/register": "^7.7.4",
-    "ajv": "^6.10.2",
+    "ajv": "^6.12.3",
     "babel-watch": "^7.0.0",
     "chai": "^4.2.0",
     "chai-json-schema-ajv": "^5.0.0",
