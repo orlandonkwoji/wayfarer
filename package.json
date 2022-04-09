@@ -71,7 +71,7 @@
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "morgan": "^1.9.1",
     "pg": "^7.14.0",
     "regenerator-runtime": "^0.13.3",
