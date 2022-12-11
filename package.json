@@ -69,7 +69,7 @@
     "cross-env": "^6.0.3",
     "custom-env": "^1.0.2",
     "debug": "^4.1.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
